@@ -11,12 +11,13 @@ CREATE TABLE IF NOT EXISTS `user` (
     `password` VARCHAR(255) NOT NULL,
     `email` VARCHAR(100) NOT NULL,
     `avatar` VARCHAR(100) NOT NULL,
-    `status` VARCHAR(255),
+    `status` VARCHAR(255) DEFAULT 'Inactive',
     PRIMARY KEY (`id`),
     UNIQUE KEY `username_unique` (`username`),
     UNIQUE KEY `email_unique` (`email`),
-    INDEX (`unique_id`) -- Ensure an index on `unique_id`
+    INDEX (`unique_id`)
 );
+
 
 CREATE TABLE IF NOT EXISTS `messages` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
