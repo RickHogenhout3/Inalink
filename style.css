@@ -135,17 +135,8 @@ label {
     width: 0px;
 }
 
-.chats-container, .chatbox::-webkit-scrollbar {
-    width: 8px;
-}
-
-.chats-container::-webkit-scrollbar-thumb, .chatbox::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 4px;
-}
-
-.chats-container::-webkit-scrollbar-track, .chatbox::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
+:is(.chats-container, .chatbox)::-webkit-scrollbar {
+    width: 0px;
 }
 
 .details {
@@ -169,13 +160,13 @@ label {
     color: green;
 }
 
+
 .which-chat {
     display: flex;
     align-items: center;
     background-color: #000;
     color: white;
     border-radius: 8px;
-    padding: 10px;
 }
 
 .which-chat .details {
@@ -189,58 +180,34 @@ label {
     margin-top: 5px; /* Adjust the margin as needed */
 }
 
-.chat-area {
-    display: flex;
-    flex-direction: column;
-}
-
 .chatbox {
     margin: 20px auto;
     overflow-y: auto;
     height: 600px;
     padding: 10px 30px 20px 30px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+}
+.chat-profilepic-inverted {
+    transform: scaleX(-1);
 }
 
-.chat-message {
+
+.chat-outgoing {
     display: flex;
-    align-items: center;
     margin-bottom: 10px;
+    justify-content: flex-end;
 }
 
-.chat-message img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-
-.chat-message p {
+.chat-outgoing .details {
     background-color: aliceblue;
     color: blue;
     padding: 10px;
     border-radius: 8px;
     max-width: 70%;
+    margin-left: 20px;
     word-wrap: break-word;
 }
 
-.chat-outgoing, .chat-incoming {
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.chat-outgoing .details, .chat-incoming .details {
-    background-color: aliceblue;
-    color: blue;
-    padding: 10px;
-    border-radius: 8px;
-    max-width: 70%;
-    margin-left: 20px; /* Adjust the margin as needed */
-    word-wrap: break-word;
-}
-
-.chat-outgoing img, .chat-incoming img {
+.chat-outgoing img {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -248,12 +215,30 @@ label {
     margin-top: 26px;
 }
 
-.chat-outgoing {
-    justify-content: flex-end; /* Align to the right */
+.chat-incoming {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.chat-incoming .details {
+    background-color: aliceblue;
+    color: blue;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 70%;
+    word-wrap: break-word;
 }
 
 .chat-incoming {
     margin-left: auto;
+}
+
+.chat-incoming img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-top: 26px;
 }
 
 .chats-container {
