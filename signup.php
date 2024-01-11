@@ -16,8 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $unique_id = generateUniqueID();
 
     // Retrieve form data
-    $fname = test_input($_POST['fname']);
-    $lname = test_input($_POST['lname']);
     $username = test_input($_POST['username']);
     $password = test_input($_POST['password']);
     $email = test_input($_POST['email']);
@@ -36,11 +34,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errors[] = "Username or email already exists. Please choose a different one.";
         } else {
             // Your SQL query using prepared statements to prevent SQL injection
-            $stmt = $connect->prepare("INSERT INTO user (unique_id, firstname, lastname, username, password, email, avatar) 
-                                    VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $connect->prepare("INSERT INTO user (unique_id, username, password, email, avatar) 
+                                    VALUES (?, ?, ?, ?, ?)");
 
             // Execute the query with the provided values
-            $stmt->execute([$unique_id, $fname, $lname, $username, $hashed_password, $email, $avatar]);
+            $stmt->execute([$unique_id, $username, $hashed_password, $email, $avatar]);
 
             // Optionally, you can redirect the user to the login page after successful registration
             header("Location: login.php");
@@ -91,20 +89,6 @@ function generateUniqueID() {
             ?>
 
             <form method="post" onsubmit="return validateForm();">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="field input">
-                            <label>First Name</label>
-                            <input type="text" name="fname" class="form-control" placeholder="First Name" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="field input">
-                            <label>Last Name</label>
-                            <input type="text" name="lname" class="form-control" placeholder="Last Name" required>
-                        </div>
-                    </div>
-                </div>
                 <div class="field input">
                     <label for="username">Username</label>
                     <input type="text" name="username" placeholder="Username" required>
