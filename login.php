@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt = $connect->prepare("UPDATE user SET status = 'active now' WHERE unique_id = ?");
                 $stmt->execute([$_SESSION['unique_id']]);
 
-                header("Location: inalink.php");
+                header("Location: index.php");
                 exit();
             } else {
                 $errors[] = "Incorrect wachtwoord. Probeer het opnieuw.";

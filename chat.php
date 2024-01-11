@@ -88,7 +88,7 @@ header("Pragma: no-cache");
         $toUserId = $_GET['to_user_id']; // Assuming you have this parameter in your URL
     ?>
         <header class="which-chat d-flex align-items-center">
-            <a href="inalink.php" style="color: green;"><i class="fas fa-arrow-left"></i></a>
+            <a href="index.php" style="color: green;"><i class="fas fa-arrow-left"></i></a>
             <img class="chat-profilepic" src="<?php echo $avatar; ?>" alt="<?php echo $username; ?>">
             <div class="details ml-3">
                 <span class="font-weight-bold"><?php echo $username; ?></span>
