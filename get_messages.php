@@ -1,28 +1,63 @@
 <?php
 include_once 'config.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_name('unieke_sessie_naam');
-    session_start();
-}
+header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 
 if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
-    header("location: login.php");
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Not logged in']);
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['to_user_id'])) {
-    $from_user_id = $_SESSION['unique_id'];
-    $to_user_id = $_GET['to_user_id'];
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+    exit;
+}
 
-    try {
-        $stmt = $connect->prepare("SELECT * FROM messages WHERE (from_user_id = ? AND to_user_id = ?) OR (from_user_id = ? AND to_user_id = ?) ORDER BY timestamp ASC");
-        $stmt->execute([$from_user_id, $to_user_id, $to_user_id, $from_user_id]);
-        $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // Return $messages as JSON or process as needed
-        echo json_encode($messages);
-    } catch (PDOException $e) {
-        echo "Error retrieving messages: " . $e->getMessage();
-        exit;
-    }
+$currentUserId = (int) $_SESSION['unique_id'];
+$toUserId = (int) ($_GET['to_user_id'] ?? 0);
+$afterId = max(0, (int) ($_GET['after_id'] ?? 0));
+
+// We only need the user id after this point. Releasing the PHP session lock lets
+// polling continue while a slower AI reply is being generated in another request.
+if (session_status() === PHP_SESSION_ACTIVE) {
+    session_write_close();
+}
+
+if ($toUserId <= 0 || $toUserId === $currentUserId) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Invalid chat recipient']);
+    exit;
+}
+
+try {
+    $stmt = $connect->prepare("
+        SELECT
+            messages.id,
+            messages.from_user_id,
+            messages.to_user_id,
+            messages.message,
+            messages.timestamp,
+            user.username AS from_username,
+            user.avatar AS from_avatar
+        FROM messages
+        JOIN user ON messages.from_user_id = user.unique_id
+        WHERE (
+                (messages.from_user_id = ? AND messages.to_user_id = ?)
+             OR (messages.from_user_id = ? AND messages.to_user_id = ?)
+        )
+        AND messages.id > ?
+        ORDER BY messages.id ASC
+    ");
+    $stmt->execute([$currentUserId, $toUserId, $toUserId, $currentUserId, $afterId]);
+
+    echo json_encode([
+        'success' => true,
+        'messages' => $stmt->fetchAll(PDO::FETCH_ASSOC)
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => 'Database error']);
 }

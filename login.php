@@ -29,8 +29,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
+            // The standard AI chatbot is not a real login account.
+            if ((int)$user['unique_id'] === MARK_BOT_UNIQUE_ID) {
+                $errors[] = "Dit account is de vaste Inalink-chatbot en kan niet worden gebruikt om in te loggen.";
+            }
             // Verifieer het verstrekte wachtwoord tegen het gehashte wachtwoord in de database
-            if (password_verify($password, $user['password'])) {
+            elseif (password_verify($password, $user['password'])) {
                 // Wachtwoord is correct, log de gebruiker in
 
                 // Vernieuw de sessie-id

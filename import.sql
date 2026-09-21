@@ -29,3 +29,19 @@ CREATE TABLE IF NOT EXISTS `messages` (
     FOREIGN KEY (`to_user_id`) REFERENCES `user`(`unique_id`)
 );
 
+
+-- Fixed Inalink chatbot account. The application also auto-creates/repairs this
+-- row from config.php so existing databases do not need to be recreated.
+INSERT INTO `user` (`unique_id`, `username`, `password`, `email`, `avatar`, `status`)
+VALUES (
+    50000001,
+    'Mark Evans',
+    '$2y$10$3L3Zb5jD93UpZx4f3mJ4R.OJ8lZrH8GmMlGLSoFCFCMnEjSC9hE9e',
+    'mark.evans.bot@inalink.local',
+    'avatars/Endou_Mamoru_avatar.png',
+    'active now'
+)
+ON DUPLICATE KEY UPDATE
+    `username` = VALUES(`username`),
+    `avatar` = VALUES(`avatar`),
+    `status` = 'active now';
